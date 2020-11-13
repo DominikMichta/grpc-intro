@@ -1,0 +1,67 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.13'
+    }
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+    id "com.google.protobuf" version "0.8.13"
+}
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/java'
+            srcDirs 'build/generated/source/proto/main/grpckotlin'
+        }
+    }
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+def kotlinVersion = '1.3.61'
+def kotlinCoroutinesVersion = '1.3.3'
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
+    compile group: 'io.grpc', name: 'grpc-protobuf', version: '1.32.2'
+    compile group: 'io.grpc', name: 'grpc-netty', version: '1.32.2'
+    compile group: 'io.grpc', name: 'grpc-stub', version: '1.32.2'
+    compile group: 'io.grpc', name: 'grpc-kotlin-stub', version: '0.1.4'
+    compile "javax.annotation:javax.annotation-api:1.3.2"
+}
+
+def protobufVersion = '3.10.0'
+def grpcVersion = '1.25.0'
+def grpcKotlinVersion = '0.1.4'
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${protobufVersion}"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+        }
+        grpckotlin {
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:${grpcKotlinVersion}"
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+            grpckotlin {}
+        }
+    }
+}
